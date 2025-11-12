@@ -1,0 +1,272 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    background-color: #FFF2E5;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.desktop-container {
+    position: absolute;
+    width: 1400px;
+    height: 800px;
+    left: 50%;
+    top: calc(50% - 20px);
+    transform: translate(-50%, -50%);
+}
+
+/* Union decoration (background element) */
+.union-decoration {
+    position: absolute;
+    width: 1115px;
+    height: 695px;
+    left: 162px;
+    top: 167px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1115 695"><path d="M0,0 L1115,0 L1115,695 L0,695 Z" fill="none"/></svg>') no-repeat;
+    opacity: 0.1;
+}
+
+/* Main music container */
+.music-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 974px;
+    height: 394px;
+}
+
+/* Capybara image */
+.capybara-image {
+    display: block;
+    width: 140%;
+    height: 140%;
+    object-fit: contain;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Staff area (inner darker brown area) */
+.staff-area {
+    position: absolute;
+    width: 680px;
+    height: 200px;
+    border-radius: 20px;
+    left: 150px;
+    top: 175px;
+    padding: 20px 0;
+}
+
+/* Staff lines */
+.staff-line {
+    position: absolute;
+    width: calc(100% - 80px);
+    height: 2px;
+    background-color: #e6ac7f;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.staff-line.line-1 {
+    top: 20px;
+}
+
+.staff-line.line-2 {
+    top: 50px;
+}
+
+.staff-line.line-3 {
+    top: 80px;
+}
+
+.staff-line.line-4 {
+    top: 110px;
+}
+
+.staff-line.line-5 {
+    top: 140px;
+}
+
+/* Decorative angled lines */
+.decorative-line {
+    position: absolute;
+    width: 95px;
+    height: 2px;
+    background-color: #865e3f;
+}
+
+.decorative-line.line-left {
+    top: 268px;
+    left: 208px;
+    transform: rotate(4.927deg);
+}
+
+.decorative-line.line-right {
+    top: 263px;
+    left: 644px;
+    transform: rotate(175.073deg) scaleY(-1);
+}
+
+/* Note circles */
+.note-circle {
+    position: absolute;
+    width: 61px;
+    height: 59px;
+    background-color: white;
+    border-radius: 50%;
+    border: 6px solid #432915;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: top 0.3s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+.note-circle:hover {
+    transform: scale(1.1);
+}
+
+.note-circle.playing {
+    transform: scale(1.15);
+    border-color: #ff8c00;
+}
+
+.note-circle:active {
+    transform: scale(0.95) !important;
+}
+
+.note-circle.changing {
+    animation: pulse 0.3s ease;
+}
+
+.note-letter {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    color: #432915;
+    line-height: 1;
+}
+
+/* Group decoration (top right) */
+.group-decoration {
+    position: absolute;
+    width: 130px;
+    height: 153px;
+    right: 200px;
+    top: 90px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 153"><path d="M0,0 L130,0 L130,153 L0,153 Z" fill="none"/></svg>') no-repeat;
+    opacity: 0.1;
+}
+
+/* Note positioning classes - these will be dynamically applied */
+.note-circle[data-note="C"] {
+    /* C is on the bottom line (line 5) */
+}
+
+.note-circle[data-note="D"] {
+    /* D is between line 4 and 5 */
+}
+
+.note-circle[data-note="E"] {
+    /* E is on line 4 */
+}
+
+.note-circle[data-note="F"] {
+    /* F is between line 3 and 4 */
+}
+
+.note-circle[data-note="G"] {
+    /* G is on line 3 */
+}
+
+.note-circle[data-note="A"] {
+    /* A is between line 2 and 3, or on line 2 */
+}
+
+.note-circle[data-note="B"] {
+    /* B is on line 2 or between line 1 and 2 */
+}
+
+/* Animation for note changes */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Controls */
+.controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+}
+
+#clear-btn {
+    color: #4c2402;
+    background-color: transparent;
+    border: 2px solid #4c2402;
+}
+
+.control-btn {
+    padding: 12px 32px;
+    border-radius: 999px;
+    background-color: #fb932c;
+    color: #4c2402;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.control-btn:hover {
+    transform: translateY(-4px);
+    background-color: #ff8c00;
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .desktop-container {
+        width: 1120px;
+        height: 640px;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+
+@media (max-width: 1200px) {
+    .desktop-container {
+        width: 840px;
+        height: 480px;
+        transform: translate(-50%, -50%) scale(0.6);
+    }
+}

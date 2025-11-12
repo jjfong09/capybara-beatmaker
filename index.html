@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capybara Beatmaker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="desktop-container">
+        <!-- Decorative Union element (background decoration) -->
+        <div class="union-decoration"></div>
+        
+        <!-- Main music container with capybara image -->
+        <div class="music-container">
+            <img src="orange.png" alt="Capybara" class="capybara-image" draggable="false">
+            
+            <!-- Inner staff area -->
+            <div class="staff-area">
+                <!-- Staff lines -->
+                <div class="staff-line line-1"></div>
+                <div class="staff-line line-2"></div>
+                <div class="staff-line line-3"></div>
+                <div class="staff-line line-4"></div>
+                <div class="staff-line line-5"></div>
+            </div>
+            
+            <!-- Note circles - positioned relative to music container, within staff area -->
+            <div class="note-circle" data-note="C" data-index="0">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="1">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="2">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="3">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="4">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="5">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="6">
+                <span class="note-letter">C</span>
+            </div>
+            <div class="note-circle" data-note="C" data-index="7">
+                <span class="note-letter">C</span>
+            </div>
+            
+            <!-- Decorative lines (angled) - positioned outside staff area -->
+            <div class="decorative-line line-left"></div>
+            <div class="decorative-line line-right"></div>
+        </div>
+        
+        <!-- Decorative group element (top right) -->
+        <div class="group-decoration"></div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <button type="button" class="control-btn play-btn">Play</button>
+            <button type="button" class="control-btn clear-btn" id="clear-btn">Clear</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
