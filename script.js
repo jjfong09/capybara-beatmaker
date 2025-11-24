@@ -56,6 +56,10 @@ class MusicGenerator {
             this.notePositions[note] = bottomPosition - (interval * index);
         });
         
+        // Calculate min and max positions for drag constraints
+        this.minNotePosition = this.notePositions['B']; // Topmost note
+        this.maxNotePosition = this.notePositions['C']; // Bottommost note
+        
         this.isPlaying = false;
         
         this.initAudio();
@@ -96,8 +100,130 @@ class MusicGenerator {
     
     setupEventListeners() {
         this.noteCircles.forEach(circle => {
-            circle.addEventListener('click', (e) => {
-                this.cycleNote(e.currentTarget);
+            // Drag state tracking
+            let isDragging = false;
+            let dragStartY = 0;
+            let dragStartTop = 0;
+            let hasMoved = false;
+            
+            // Mouse events
+            circle.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                hasMoved = false;
+                dragStartY = e.clientY;
+                dragStartTop = parseFloat(circle.style.top) || this.notePositions[circle.dataset.note];
+                circle.style.cursor = 'grabbing';
+                circle.classList.add('dragging');
+                circle.style.transition = 'none'; // Disable transition during drag
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaY = e.clientY - dragStartY;
+                const dragThreshold = 5; // Minimum pixels to consider it a drag
+                
+                if (Math.abs(deltaY) > dragThreshold) {
+                    hasMoved = true;
+                    
+                    // Calculate new position with bounds checking
+                    let newTop = dragStartTop + deltaY;
+                    
+                    // Constrain to min and max note positions
+                    newTop = Math.max(this.minNotePosition, Math.min(this.maxNotePosition, newTop));
+                    
+                    // Find the closest note position
+                    const closestNote = this.findClosestNote(newTop);
+                    
+                    // Update note if it changed
+                    if (closestNote !== circle.dataset.note) {
+                        this.updateNote(circle, closestNote);
+                    }
+                    
+                    // Update visual position during drag
+                    circle.style.top = `${newTop}px`;
+                }
+            });
+            
+            document.addEventListener('mouseup', (e) => {
+                if (isDragging) {
+                    isDragging = false;
+                    circle.style.cursor = 'pointer';
+                    circle.classList.remove('dragging');
+                    circle.style.transition = ''; // Re-enable transition
+                    
+                    // If it was a drag, snap to the final note position
+                    if (hasMoved) {
+                        const finalNote = circle.dataset.note;
+                        const finalTop = this.notePositions[finalNote];
+                        circle.style.top = `${finalTop}px`;
+                        this.playNote(finalNote);
+                    } else {
+                        // If it was just a click (no movement), cycle the note
+                        this.cycleNote(circle);
+                    }
+                }
+            });
+            
+            // Touch events for mobile support
+            circle.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                hasMoved = false;
+                const touch = e.touches[0];
+                dragStartY = touch.clientY;
+                dragStartTop = parseFloat(circle.style.top) || this.notePositions[circle.dataset.note];
+                circle.classList.add('dragging');
+                circle.style.transition = 'none'; // Disable transition during drag
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                const touch = e.touches[0];
+                const deltaY = touch.clientY - dragStartY;
+                const dragThreshold = 5;
+                
+                if (Math.abs(deltaY) > dragThreshold) {
+                    hasMoved = true;
+                    
+                    // Calculate new position with bounds checking
+                    let newTop = dragStartTop + deltaY;
+                    
+                    // Constrain to min and max note positions
+                    newTop = Math.max(this.minNotePosition, Math.min(this.maxNotePosition, newTop));
+                    
+                    // Find the closest note position
+                    const closestNote = this.findClosestNote(newTop);
+                    
+                    // Update note if it changed
+                    if (closestNote !== circle.dataset.note) {
+                        this.updateNote(circle, closestNote);
+                    }
+                    
+                    // Update visual position during drag
+                    circle.style.top = `${newTop}px`;
+                }
+                
+                e.preventDefault();
+            });
+            
+            document.addEventListener('touchend', (e) => {
+                if (isDragging) {
+                    isDragging = false;
+                    circle.classList.remove('dragging');
+                    circle.style.transition = ''; // Re-enable transition
+                    
+                    if (hasMoved) {
+                        const finalNote = circle.dataset.note;
+                        const finalTop = this.notePositions[finalNote];
+                        circle.style.top = `${finalTop}px`;
+                        this.playNote(finalNote);
+                    } else {
+                        this.cycleNote(circle);
+                    }
+                }
             });
         });
 
@@ -115,6 +241,32 @@ class MusicGenerator {
                 this.clearNotes();
             });
         }
+    }
+    
+    findClosestNote(yPosition) {
+        let closestNote = 'C';
+        let minDistance = Infinity;
+        
+        Object.entries(this.notePositions).forEach(([note, position]) => {
+            const distance = Math.abs(yPosition - position);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestNote = note;
+            }
+        });
+        
+        return closestNote;
+    }
+    
+    updateNote(circle, newNote) {
+        circle.dataset.note = newNote;
+        circle.querySelector('.note-letter').textContent = newNote;
+        
+        // Add animation
+        circle.classList.add('changing');
+        setTimeout(() => {
+            circle.classList.remove('changing');
+        }, 300);
     }
     
     cycleNote(circle) {

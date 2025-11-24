@@ -75,10 +75,11 @@ body {
 .staff-line {
     position: absolute;
     width: calc(100% - 80px);
-    height: 2px;
-    background-color: #e6ac7f;
+    height: 3.5px;
+    background-color: #b08360;
     left: 50%;
     transform: translateX(-50%);
+    border-radius: 1.5px;
 }
 
 .staff-line.line-1 {
@@ -132,13 +133,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: grab;
     transition: top 0.3s ease, transform 0.2s ease;
     z-index: 10;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .note-circle:hover {
     transform: scale(1.1);
+}
+
+.note-circle.dragging {
+    cursor: grabbing;
 }
 
 .note-circle.playing {
@@ -215,7 +222,7 @@ body {
 /* Controls */
 .controls {
     position: absolute;
-    bottom: 20px;
+    bottom: 38px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
