@@ -3,10 +3,10 @@
 
 class MusicGenerator {
     constructor() {
-        this.notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        this.notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
         this.audioContext = null;
         
-        // Note frequencies (C4 to B4)
+        // Note frequencies (C4 to C5)
         this.noteFrequencies = {
             'C': 261.63,  // C4
             'D': 293.66,  // D4
@@ -14,7 +14,8 @@ class MusicGenerator {
             'F': 349.23,  // F4
             'G': 392.00,  // G4
             'A': 440.00,  // A4
-            'B': 493.88   // B4
+            'B': 493.88,  // B4
+            'C5': 523.25  // C5
         };
         
         // Staff line positions (from music container top)
@@ -38,18 +39,18 @@ class MusicGenerator {
         this.noteDiameter = this.noteCircles.length ? parseFloat(window.getComputedStyle(this.noteCircles[0]).width) : 60;
         this.noteRadius = this.noteDiameter / 2;
 
-        // Calculate positions: A (highest) at top line, C (lowest) at bottom line
+        // Calculate positions: C5 (highest) at top line, C (lowest) at bottom line
         // Evenly space all notes between them
         const topLine = this.staffAreaTop + this.staffPadding; // Line 1
         const bottomLine = this.staffAreaTop + this.staffPadding + 140; // Line 5
-        const topPosition = topLine - this.noteRadius; // A position (centered on top line)
+        const topPosition = topLine - this.noteRadius; // C5 position (centered on top line)
         const bottomPosition = bottomLine - this.noteRadius; // C position (centered on bottom line)
         const range = bottomPosition - topPosition; // Total range = 120px
         
-        // Notes ordered from lowest to highest: C, D, E, F, G, A, B
-        // Space them evenly: 6 intervals between 7 notes
-        const interval = range / 6;
-        const ascendingNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        // Notes ordered from lowest to highest: C, D, E, F, G, A, B, C5
+        // Space them evenly: 7 intervals between 8 notes
+        const interval = range / 7;
+        const ascendingNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C5'];
         
         this.notePositions = {};
         ascendingNotes.forEach((note, index) => {
@@ -57,7 +58,7 @@ class MusicGenerator {
         });
         
         // Calculate min and max positions for drag constraints
-        this.minNotePosition = this.notePositions['B']; // Topmost note
+        this.minNotePosition = this.notePositions['C5']; // Topmost note
         this.maxNotePosition = this.notePositions['C']; // Bottommost note
         
         this.isPlaying = false;
@@ -85,7 +86,7 @@ class MusicGenerator {
             const note = circle.dataset.note || 'C';
             const noteTop = this.notePositions[note] ?? this.notePositions['C'];
             circle.dataset.note = note;
-            circle.querySelector('.note-letter').textContent = note;
+            circle.querySelector('.note-letter').textContent = this.getNoteDisplayText(note);
             circle.style.top = `${noteTop}px`;
         });
     }
@@ -258,9 +259,14 @@ class MusicGenerator {
         return closestNote;
     }
     
+    getNoteDisplayText(note) {
+        // Display 'C' for both C and C5
+        return note === 'C5' ? 'C' : note;
+    }
+    
     updateNote(circle, newNote) {
         circle.dataset.note = newNote;
-        circle.querySelector('.note-letter').textContent = newNote;
+        circle.querySelector('.note-letter').textContent = this.getNoteDisplayText(newNote);
         
         // Add animation
         circle.classList.add('changing');
@@ -279,7 +285,7 @@ class MusicGenerator {
         
         // Update the note
         circle.dataset.note = nextNote;
-        circle.querySelector('.note-letter').textContent = nextNote;
+        circle.querySelector('.note-letter').textContent = this.getNoteDisplayText(nextNote);
         
         // Update position on staff
         const newTop = this.notePositions[nextNote];
@@ -377,7 +383,7 @@ class MusicGenerator {
         this.noteCircles.forEach(circle => {
             const defaultNote = 'C';
             circle.dataset.note = defaultNote;
-            circle.querySelector('.note-letter').textContent = defaultNote;
+            circle.querySelector('.note-letter').textContent = this.getNoteDisplayText(defaultNote);
             const top = this.notePositions[defaultNote];
             if (typeof top === 'number') {
                 circle.style.top = `${top}px`;
